@@ -1,43 +1,8 @@
 {
-  "merged_p70_all": {
-    "file_name": "merged_p70_all.json",
-    "formatting": "sharegpt",
-    "columns": {
-      "messages": "messages",
-      "images": "images"
-    },
-    "tags": {
-      "role_tag": "role",
-      "content_tag": "content",
-      "user_tag": "user",
-      "assistant_tag": "assistant"
-    }
-  },
   "identity": {
     "file_name": "identity.json"
   },
-  "instruct_sft": {
-    "file_name": "instruct_sft-p30.json",
-    "formatting": "sharegpt",
-    "columns": {
-      "messages": "conversations",
-      "images": "images"
-    }
-  },
-  "qwen3vl_4b_70": {
-    "file_name": "merged_all70.json",
-    "formatting": "sharegpt",
-    "columns": {
-      "messages": "messages",
-      "images": "images"
-    },
-    "tags": {
-      "role_tag": "role",
-      "content_tag": "content",
-      "user_tag": "user",
-      "assistant_tag": "assistant"
-    }
-  },
+
   "alpaca_en_demo": {
     "file_name": "alpaca_en_demo.json"
   },
