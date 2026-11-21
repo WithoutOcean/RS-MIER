@@ -157,21 +157,6 @@ Checkpointing:  every 600 steps
 
 The uppercase batch and validation variables can be set before the launch command. Additional settings are defined in `easy-r1/examples/config.yaml` and overridden by the project launcher where applicable.
 
-#### Rewards
-
-The default launcher combines four terms:
-
-| Term | Weight | Description |
-| --- | ---: | --- |
-| Format | 0.1 | Scores 0 for a valid, nonempty perception → reasoning → answer response and −1 for an invalid format. |
-| Visual evidence | 0.4 | Scores whether the independent reasoner can produce the correct answer using the question and generated visual evidence. |
-| Correctness-state consistency | 0.2 | Scores whether the independent reasoner and the policy have the same answer-correctness state: both correct or both incorrect. |
-| Final answer | 0.3 | Scores whether the policy's final answer matches the reference answer. |
-
-The independent reasoner receives the question and `<perception>` text; it is not given the images, the policy's `<think>` text, the policy's answer, or the reference answer. The reference is used afterward to compute the reward.
-
-Training weights are configurable through `FORMAT_WEIGHT`, `PERCEPTION_WEIGHT`, `REASONING_WEIGHT`, and `ANSWER_WEIGHT`. Validation evaluates final-answer accuracy without invoking the independent reasoner. The current implementation compares answers by exact string match after trimming surrounding whitespace and ignoring case.
-
 #### Export the RL checkpoint
 
 With the default experiment name, actor checkpoints are saved under:
