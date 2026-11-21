@@ -246,13 +246,12 @@ def canonicalize_ratio(text: str) -> str | None:
         return "0"
 
     patterns = [
-        # between 20 and 30 percent
+       
         r"\bbetween\s+(\d{1,3})\s*%?\s+and\s+(\d{1,3})\s*%?",
 
-        # from 20 to 30 percent
+       
         r"\bfrom\s+(\d{1,3})\s*%?\s+to\s+(\d{1,3})\s*%?",
 
-        # 20 to 30 / 20% to 30%
         r"\b(\d{1,3})\s*%?\s+to\s+(\d{1,3})\s*%?",
     ]
 
@@ -264,7 +263,7 @@ def canonicalize_ratio(text: str) -> str | None:
             candidate = f"{low}_to_{high}"
             return candidate if candidate in OFFICIAL_LABELS else None
 
-    # 20-30%, 20~30%, 20–30%, 20—30%
+    
     match = re.search(
         r"\b(\d{1,3})\s*%?\s*[-~–—]\s*(\d{1,3})\s*%?",
         raw,

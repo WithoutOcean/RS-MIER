@@ -241,12 +241,7 @@ def compute_score(
     judge_retries: int = 2,
     judge_max_workers: int = 128,
 ) -> list[dict[str, float]]:
-    """EasyR1 batch entrypoint for the rewards.
-
-    Format contributes 0 for valid output and -1 for invalid output. Other
-    components are binary. The overall reward is normalized by the sum of
-    the weights. Reasoning is enabled when its weight is positive.
-    """
+   
     weights = (format_weight, perception_weight, reasoning_weight, answer_weight)
     weight_sum = sum(weights)
     if any(weight < 0.0 for weight in weights) or weight_sum <= 0.0:
