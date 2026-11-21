@@ -1,0 +1,13 @@
+{% if not content.lstrip().lower().startswith('question:') %}Question:
+{% endif %}{{ content | trim }}
+
+Analyze the provided temporal remote-sensing images and answer the question.
+
+First, report directly observable visual evidence in <perception> </perception>.
+Then, use that evidence to derive the answer in <think> </think>.
+Finally, give only the concise final answer in <answer> </answer>.
+
+Your response must follow this format:
+<perception>visual observations</perception>
+<think>reasoning</think>
+<answer>final answer</answer>
