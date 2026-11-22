@@ -128,17 +128,24 @@ Preserve the acquisition order when preparing temporal image pairs. The loader f
 
 #### Configuration and start
 
-Run from `easy-r1/`:
+Before starting training, configure `MODEL_PATH`, `JUDGE_MODEL_PATH`, `TRAIN_FILE`, `VAL_FILE`, and `IMAGE_DIR` in `easy-r1/examples/qwen3_vl_RS_MIER.sh`, or supply them as environment variables as shown below.
+
+From the repository root (`RS-MIER/`), activate the PRD-RL environment, enter `easy-r1/`, and launch training:
 
 ```bash
 conda activate rs-mier-rl
-cd /path/to/RS-MIER/easy-r1
+cd easy-r1
+bash examples/qwen3_vl_RS_MIER.sh
+```
 
-MODEL_PATH="/path/to/checkpoints/ED-SFT" \
-JUDGE_MODEL_PATH="/path/to/checkpoints/Qwen3-32B" \
-TRAIN_FILE="/path/to/data/train.jsonl" \
-VAL_FILE="/path/to/data/val.jsonl" \
-IMAGE_DIR="/path/to/images" \
+For example, if model checkpoints are stored under `easy-r1/checkpoints/` and data under `easy-r1/dataset/`, run the following command from `easy-r1/`. Adjust these relative paths to match your directory layout:
+
+```bash
+MODEL_PATH="./checkpoints/ED-SFT" \
+JUDGE_MODEL_PATH="./checkpoints/Qwen3-32B" \
+TRAIN_FILE="./dataset/train.jsonl" \
+VAL_FILE="./dataset/val.jsonl" \
+IMAGE_DIR="./dataset/images" \
 bash examples/qwen3_vl_RS_MIER.sh
 ```
 
