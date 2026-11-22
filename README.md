@@ -4,24 +4,38 @@ Chain-of-thought (CoT) provides an explicit textual trace of the visual evidence
 
 ## Overview
 
-RS-MIER is implemented on top of two existing open-source training frameworks: [LLaMA-Factory](https://github.com/hiyouga/LlamaFactory) and [EasyR1](https://github.com/hiyouga/EasyR1). The `LlamaFactory/` and `easy-r1/` directories contain adapted copies of these upstream frameworks, respectively. The underlying framework implementations are credited to their original authors and contributors.
+RS-MIER is implemented on top of two existing open-source training frameworks: [LLaMA-Factory](https://github.com/hiyouga/LlamaFactory) and [EasyR1](https://github.com/hiyouga/EasyR1). The `RS-MIER/LlamaFactory/` and `RS-MIER/easy-r1/` directories contain adapted copies of these upstream frameworks, respectively. The underlying framework implementations are credited to their original authors and contributors.
 
 | Directory | Upstream framework | Role in RS-MIER |
 | --- | --- | --- |
-| `LlamaFactory/` | [LLaMA-Factory](https://github.com/hiyouga/LlamaFactory) | Supervised fine-tuning, LoRA adapter training, and model export infrastructure for ED-SFT. |
-| `easy-r1/` | [EasyR1](https://github.com/hiyouga/EasyR1), which builds on verl | Reinforcement learning, rollout, and checkpoint infrastructure used by PRD-RL. |
+| `RS-MIER/LlamaFactory/` | [LLaMA-Factory](https://github.com/hiyouga/LlamaFactory) | Supervised fine-tuning, LoRA adapter training, and model export infrastructure for ED-SFT. |
+| `RS-MIER/easy-r1/` | [EasyR1](https://github.com/hiyouga/EasyR1), which builds on verl | Reinforcement learning, rollout, and checkpoint infrastructure used by PRD-RL. |
+
+Repository layout (relative to the repository root):
+
+```text
+.
+├── README.md
+├── RS-MIER/
+│   ├── easy-r1/
+│   └── LlamaFactory/
+└── Demo_data/
+    └── .gitkeep
+```
+
+`Demo_data/` is reserved for demonstration data. The `.gitkeep` file preserves this directory in Git until data files are added.
 
 RS-MIER adapts these frameworks through task-specific training configurations, the evidence-first response format, and PRD-RL launch and reward integration with an independent reasoner. These project-specific configurations and integrations build on the upstream training infrastructure.
 
 RS-MIER follows a two-stage training pipeline: evidence-dominant supervised fine-tuning (ED-SFT), followed by Perception-Reasoning Decoupled Reinforcement Learning (PRD-RL).
 
-- `LlamaFactory/` provides the supervised fine-tuning and model export framework.
-- `LlamaFactory/examples/train_lora/qwen3vl_lora_sft.yaml` configures Qwen3-VL LoRA fine-tuning.
-- `LlamaFactory/examples/merge_lora/qwen3vl_lora_sft.yaml` merges the trained LoRA adapter into a complete model.
-- `easy-r1/examples/qwen3_vl_RS_MIER.sh` launches PRD-RL training and manages the independent reasoner services.
-- `easy-r1/examples/reward_function/reward_four_part.py` implements the format, visual-evidence, correctness-state consistency, and final-answer rewards.
-- `easy-r1/examples/format_prompt/multi_image.jinja` defines the evidence-first response format.
-- `easy-r1/scripts/model_merger.py` exports distributed RL checkpoints.
+- `RS-MIER/LlamaFactory/` provides the supervised fine-tuning and model export framework.
+- `RS-MIER/LlamaFactory/examples/train_lora/qwen3vl_lora_sft.yaml` configures Qwen3-VL LoRA fine-tuning.
+- `RS-MIER/LlamaFactory/examples/merge_lora/qwen3vl_lora_sft.yaml` merges the trained LoRA adapter into a complete model.
+- `RS-MIER/easy-r1/examples/qwen3_vl_RS_MIER.sh` launches PRD-RL training and manages the independent reasoner services.
+- `RS-MIER/easy-r1/examples/reward_function/reward_four_part.py` implements the format, visual-evidence, correctness-state consistency, and final-answer rewards.
+- `RS-MIER/easy-r1/examples/format_prompt/multi_image.jinja` defines the evidence-first response format.
+- `RS-MIER/easy-r1/scripts/model_merger.py` exports distributed RL checkpoints.
 
 The model generates its response in the following order:
 
@@ -49,7 +63,7 @@ Use separate Python environments for ED-SFT and PRD-RL because the two framework
 ```bash
 conda create -n rs-mier-sft python=3.11 -y
 conda activate rs-mier-sft
-cd /path/to/RS-MIER/LlamaFactory
+cd /path/to/RS-MIER/RS-MIER/LlamaFactory
 python -m pip install -e .
 ```
 
@@ -58,12 +72,12 @@ python -m pip install -e .
 ```bash
 conda create -n rs-mier-rl python=3.11 -y
 conda activate rs-mier-rl
-cd /path/to/RS-MIER/easy-r1
+cd /path/to/RS-MIER/RS-MIER/easy-r1
 # Install the CUDA-compatible PyTorch build for your system first.
 python -m pip install -e .
 ```
 
-PRD-RL uses vLLM, Ray, FlashAttention, and Qwen-VL utilities. The declared dependencies are in `easy-r1/requirements.txt`. Use versions that support your Qwen3-VL checkpoint and installed CUDA/PyTorch stack.
+PRD-RL uses vLLM, Ray, FlashAttention, and Qwen-VL utilities. The declared dependencies are in `RS-MIER/easy-r1/requirements.txt`. Use versions that support your Qwen3-VL checkpoint and installed CUDA/PyTorch stack.
 
 ## Training
 
@@ -128,17 +142,17 @@ Preserve the acquisition order when preparing temporal image pairs. The loader f
 
 #### Configuration and start
 
-Before starting training, configure `MODEL_PATH`, `JUDGE_MODEL_PATH`, `TRAIN_FILE`, `VAL_FILE`, and `IMAGE_DIR` in `easy-r1/examples/qwen3_vl_RS_MIER.sh`, or supply them as environment variables as shown below.
+Before starting training, configure `MODEL_PATH`, `JUDGE_MODEL_PATH`, `TRAIN_FILE`, `VAL_FILE`, and `IMAGE_DIR` in `RS-MIER/easy-r1/examples/qwen3_vl_RS_MIER.sh`, or supply them as environment variables as shown below.
 
-From the repository root (`RS-MIER/`), activate the PRD-RL environment, enter `easy-r1/`, and launch training:
+From the repository root (the directory containing this README), activate the PRD-RL environment, enter `RS-MIER/easy-r1/`, and launch training:
 
 ```bash
 conda activate rs-mier-rl
-cd easy-r1
+cd RS-MIER/easy-r1
 bash examples/qwen3_vl_RS_MIER.sh
 ```
 
-For example, if model checkpoints are stored under `easy-r1/checkpoints/` and data under `easy-r1/dataset/`, run the following command from `easy-r1/`. Adjust these relative paths to match your directory layout:
+For example, if model checkpoints are stored under `RS-MIER/easy-r1/checkpoints/` and data under `RS-MIER/easy-r1/dataset/`, run the following command from `RS-MIER/easy-r1/`. Adjust these relative paths to match your directory layout:
 
 ```bash
 MODEL_PATH="./checkpoints/ED-SFT" \
@@ -162,23 +176,23 @@ Validation:     VAL_BATCH_SIZE=16, VAL_FREQ=300
 Checkpointing:  every 600 steps
 ```
 
-The uppercase batch and validation variables can be set before the launch command. Additional settings are defined in `easy-r1/examples/config.yaml` and overridden by the project launcher where applicable.
+The uppercase batch and validation variables can be set before the launch command. Additional settings are defined in `RS-MIER/easy-r1/examples/config.yaml` and overridden by the project launcher where applicable.
 
 #### Export the RL checkpoint
 
 With the default experiment name, actor checkpoints are saved under:
 
 ```text
-easy-r1/checkpoints/easy_r1/multi_image_reason/global_step_<step>/actor/
+RS-MIER/easy-r1/checkpoints/easy_r1/multi_image_reason/global_step_<step>/actor/
 ```
 
 Replace `<step>` with the checkpoint step to export:
 
 ```bash
-cd /path/to/RS-MIER/easy-r1
+cd /path/to/RS-MIER/RS-MIER/easy-r1
 
 python scripts/model_merger.py \
-  --local_dir "/path/to/RS-MIER/easy-r1/checkpoints/easy_r1/multi_image_reason/global_step_<step>/actor"
+  --local_dir "/path/to/RS-MIER/RS-MIER/easy-r1/checkpoints/easy_r1/multi_image_reason/global_step_<step>/actor"
 ```
 
 The exporter writes the Hugging Face model to the actor directory's `huggingface/` subdirectory.
@@ -187,4 +201,4 @@ The exporter writes the Hugging Face model to the actor directory's `huggingface
 
 We thank the authors and contributors of [LLaMA-Factory](https://github.com/hiyouga/LlamaFactory) and [EasyR1](https://github.com/hiyouga/EasyR1) for their open-source training frameworks. RS-MIER uses and adapts these frameworks for its supervised fine-tuning and reinforcement learning stages.
 
-The bundled framework code remains subject to its upstream copyright notices and license terms. See [LlamaFactory/LICENSE](https://github.com/WithoutOcean/RS-MIER/blob/main/LlamaFactory/LICENSE) and [easy-r1/LICENSE](https://github.com/WithoutOcean/RS-MIER/blob/main/easy-r1/LICENSE) for the respective Apache License 2.0 texts. Model checkpoints and datasets are subject to their own licenses and usage terms.
+The bundled framework code remains subject to its upstream copyright notices and license terms. See [RS-MIER/LlamaFactory/LICENSE](https://github.com/WithoutOcean/RS-MIER/blob/main/RS-MIER/LlamaFactory/LICENSE) and [RS-MIER/easy-r1/LICENSE](https://github.com/WithoutOcean/RS-MIER/blob/main/RS-MIER/easy-r1/LICENSE) for the respective Apache License 2.0 texts. Model checkpoints and datasets are subject to their own licenses and usage terms.
